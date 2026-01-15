@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Manage Students</h1>
+    <form class="d-flex" action="{{ url_for('admin.manage_students') }}" method="GET">
+        <input class="form-control me-2" type="search" placeholder="Search by Name/Email" name="search"
+            value="{{ search_query }}">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+        {% if search_query %}
+        <a href="{{ url_for('admin.manage_students') }}" class="btn btn-outline-secondary ms-2">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">All Registered Students</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>DOB</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user, detail in students %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ detail.phone or 'N/A' }}</td>
+                        <td>{{ detail.dob or 'N/A' }}</td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
+                            <a href="{{ url_for('admin.delete_student', user_id=user.id) }}"
+                                class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')"><i
+                                    class="fas fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

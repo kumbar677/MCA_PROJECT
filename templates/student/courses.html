@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4">
+    <div>
+        <h2>Available Courses</h2>
+        <p class="text-muted">Browse and enroll in courses to advance your career.</p>
+    </div>
+    <form class="d-flex" action="{{ url_for('student.courses') }}" method="GET">
+        <input class="form-control me-2" type="search" placeholder="Search Courses" name="search"
+            value="{{ search_query }}">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+        {% if search_query %}
+        <a href="{{ url_for('student.courses') }}" class="btn btn-outline-secondary ms-2">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<div class="row">
+    {% for course in courses %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title fw-bold text-primary">{{ course.name }}</h5>
+                    <span class="badge bg-secondary">{{ course.course_code }}</span>
+                </div>
+                <p class="card-text text-muted small">{{ course.description }}</p>
+                <div class="d-flex justify-content-between mb-3 text-muted small">
+                    <span><i class="fas fa-clock me-1"></i> Credits: {{ course.credits }}</span>
+                    <span><i class="fas fa-users me-1"></i> Seats: {{ course.seats }}</span>
+                </div>
+
+                <div class="d-grid">
+                    {% if course.id in enrolled_ids %}
+                    <button class="btn btn-success disabled">
+                        <i class="fas fa-check-circle me-2"></i>Enrolled
+                    </button>
+                    {% elif course.seats <= 0 %} <button class="btn btn-secondary disabled">
+                        <i class="fas fa-ban me-2"></i>Full
+                        </button>
+                        {% else %}
+                        <a href="{{ url_for('student.enroll', course_id=course.id) }}" class="btn btn-outline-primary">
+                            Enroll Now
+                        </a>
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <h4 class="text-muted">No courses available at the moment.</h4>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

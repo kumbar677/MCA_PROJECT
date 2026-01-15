@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2>Welcome, {{ current_user.name }}!</h2>
+        <p class="text-muted">Manage your profile and track your enrollments.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-user-circle fa-5x text-secondary mb-3"></i>
+                <h5 class="card-title">{{ current_user.name }}</h5>
+                <p class="text-muted">{{ current_user.email }}</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('student.profile') }}" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">My Enrollments</h5>
+            </div>
+            <div class="card-body">
+                {% if enrollments %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Course Code</th>
+                                <th>Course Name</th>
+                                <th>Date Enrolled</th>
+                                <th>Course Link</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enroll in enrollments %}
+                            <tr>
+                                <td>{{ enroll.course.course_code }}</td>
+                                <td>{{ enroll.course.name }}</td>
+                                <td>{{ enroll.date_enrolled.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if enroll.course.link %}
+                                    <a href="{{ enroll.course.link }}" target="_blank" class="btn btn-sm btn-info">
+                                        <i class="fas fa-link"></i> Open Link
+                                    </a>
+                                    {% else %}
+                                    <span class="text-muted">No Link</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">{{ enroll.status }}</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <p class="text-muted">You haven't enrolled in any courses yet.</p>
+                    <a href="{{ url_for('student.courses') }}" class="btn btn-outline-primary">Browse Courses</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
